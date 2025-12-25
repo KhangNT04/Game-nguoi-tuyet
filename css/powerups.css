@@ -1,0 +1,161 @@
+/* Power-ups UI Styles */
+
+.powerups-ui {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.powerup-indicator {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+  padding: 14px 18px;
+  border-radius: 15px;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 160px;
+  animation: powerupAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.powerup-indicator:hover {
+  transform: translateX(-3px);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    0 12px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+@keyframes powerupAppear {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.powerup-icon {
+  font-size: 1.8em;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.powerup-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.powerup-name {
+  color: #ffffff;
+  font-size: 0.9em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.powerup-timer {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.powerup-timer-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* Power-up specific colors */
+.powerup-indicator[data-type="shield"] .powerup-timer-bar {
+  background: linear-gradient(90deg, #2196F3, #64B5F6);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+}
+
+.powerup-indicator[data-type="speedBoost"] .powerup-timer-bar {
+  background: linear-gradient(90deg, #FF9800, #FFB74D);
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+}
+
+.powerup-indicator[data-type="scoreMultiplier"] .powerup-timer-bar {
+  background: linear-gradient(90deg, #9C27B0, #BA68C8);
+  box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
+}
+
+.powerup-indicator[data-type="slowMotion"] .powerup-timer-bar {
+  background: linear-gradient(90deg, #00BCD4, #4DD0E1);
+  box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+.powerup-indicator[data-type="magnet"] .powerup-timer-bar {
+  background: linear-gradient(90deg, #F44336, #E57373);
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+}
+
+/* Shield effect on player */
+.player-shield {
+  position: absolute;
+  pointer-events: none;
+}
+
+.shield-effect {
+  border-radius: 50%;
+  border: 3px solid rgba(33, 150, 243, 0.6);
+  box-shadow: 
+    0 0 20px rgba(33, 150, 243, 0.8),
+    inset 0 0 20px rgba(33, 150, 243, 0.3);
+  animation: shieldPulse 1s ease-in-out infinite;
+}
+
+@keyframes shieldPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .powerups-ui {
+    top: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+
+  .powerup-indicator {
+    padding: 10px 12px;
+    min-width: 120px;
+  }
+
+  .powerup-icon {
+    font-size: 1.5em;
+  }
+
+  .powerup-name {
+    font-size: 0.8em;
+  }
+}
+

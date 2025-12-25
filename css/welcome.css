@@ -1,0 +1,476 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(#061a33, #0b3d91);
+    overflow: hidden;
+}
+
+.welcome {
+    height: 100vh;
+    text-align: center;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.welcome > * {
+    position: relative;
+    z-index: 2;
+}
+
+.title {
+    font-size: 2.3em;
+    text-shadow: 0 0 15px rgba(255,255,255,.6);
+    animation: float 3s ease-in-out infinite;
+}
+
+.characters {
+    display: flex;
+    gap: 80px;
+    margin: 40px 0;
+}
+
+.snowman, .tree {
+    font-size: 6em;
+    animation: bounce 2s infinite;
+}
+
+.tree { animation-delay: .5s; }
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+    align-items: center;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.button-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+.button-row .btn {
+    flex: 1;
+    min-width: 150px;
+}
+
+.btn {
+    padding: 15px 40px;
+    border-radius: 40px;
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+    z-index: 11;
+    pointer-events: auto;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.primary {
+    background: linear-gradient(135deg, #ff3d3d, #c62828);
+    color: white;
+    box-shadow: 0 8px 20px rgba(255,0,0,.4);
+}
+
+.primary:hover {
+    box-shadow: 0 10px 25px rgba(255,0,0,.6);
+}
+
+.secondary {
+    background: rgba(255,255,255,.2);
+    color: white;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.secondary:hover {
+    background: rgba(255,255,255,.3);
+}
+
+.snow-layer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(white 1px, transparent 1px);
+    background-size: 18px 18px;
+    animation: snow 10s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes snow {
+    from { transform: translateY(0); }
+    to { transform: translateY(100px); }
+}
+
+@keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Modal Styles */
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+    overflow-y: auto;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: linear-gradient(135deg, rgba(26, 58, 90, 0.95), rgba(45, 90, 135, 0.95));
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    line-height: 1;
+}
+
+.close:hover,
+.close:focus {
+    color: #fff;
+    text-decoration: none;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Leaderboard Styles */
+#leaderboardContent {
+    color: white;
+}
+
+/* Achievements Styles */
+.achievements-stats {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: white;
+}
+
+.achievements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.achievement-item.unlocked {
+    background: rgba(255, 215, 0, 0.2);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+}
+
+.achievement-item.locked {
+    opacity: 0.6;
+}
+
+.achievement-icon {
+    font-size: 2.5em;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.achievement-info {
+    flex: 1;
+}
+
+.achievement-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.achievement-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9em;
+}
+
+.achievement-status {
+    font-size: 1.5em;
+}
+
+/* Help Content */
+.help-content {
+    color: white;
+    line-height: 1.8;
+}
+
+.help-content h3 {
+    color: #ffd700;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.help-content p {
+    margin: 8px 0;
+}
+
+/* Shop Styles */
+.shop-modal {
+    max-width: 700px;
+}
+
+.shop-balance {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 10px;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.shop-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.shop-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 1.1em;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.3s ease;
+}
+
+.shop-tab:hover {
+    color: white;
+}
+
+.shop-tab.active {
+    color: #ffd700;
+    border-bottom-color: #ffd700;
+}
+
+.shop-content {
+    min-height: 300px;
+}
+
+.shop-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.shop-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.shop-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.shop-item.unlocked {
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.shop-item.selected {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.shop-item.locked {
+    opacity: 0.7;
+}
+
+.shop-item-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.shop-item-name {
+    font-weight: bold;
+    color: white;
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+.shop-item-desc {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85em;
+    margin-bottom: 10px;
+    min-height: 40px;
+}
+
+.shop-item-price {
+    color: #ffd700;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.shop-btn {
+    width: 100%;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.buy-btn {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+}
+
+.buy-btn:hover:not(.disabled) {
+    background: linear-gradient(135deg, #66BB6A, #4CAF50);
+    transform: scale(1.05);
+}
+
+.buy-btn.disabled {
+    background: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.select-btn {
+    background: linear-gradient(135deg, #2196F3, #1565C0);
+    color: white;
+}
+
+.select-btn:hover {
+    background: linear-gradient(135deg, #42A5F5, #2196F3);
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .button-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .button-row .btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        padding: 20px;
+        width: 95%;
+    }
+    
+    .achievement-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .shop-items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+    
+    .shop-balance {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

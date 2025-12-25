@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>🎄 Snowman Ski Game 🎄</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/welcome.css" />
+</head>
+<body>
+
+<div class="welcome">
+    <div class="snow-layer"></div>
+
+    <h1 class="title">
+        🎄 Chúc bạn một mùa Giáng Sinh an lành và ấm áp 🎄
+    </h1>
+
+    <div class="characters">
+        <div class="snowman">⛄</div>
+        <div class="tree">🎄</div>
+    </div>
+
+    <div class="buttons">
+        <a href="game.html" class="btn primary">🎮 BẮT ĐẦU</a>
+        <div class="button-row">
+            <button id="leaderboardBtn" class="btn secondary">🏆 Bảng Xếp Hạng</button>
+            <button id="achievementsBtn" class="btn secondary">⭐ Thành Tích</button>
+        </div>
+        <div class="button-row">
+            <button id="shopBtn" class="btn secondary">🛒 Cửa Hàng</button>
+            <button id="helpBtn" class="btn secondary">❓ Hướng Dẫn</button>
+        </div>
+        <div class="button-row">
+            <button id="musicToggle" class="btn secondary">🎵 Nhạc: <span id="musicState">Bật</span></button>
+        </div>
+    </div>
+    
+    <!-- Leaderboard Modal -->
+    <div id="leaderboardModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>🏆 Bảng Xếp Hạng</h2>
+            <div id="leaderboardContent"></div>
+        </div>
+    </div>
+    
+    <!-- Achievements Modal -->
+    <div id="achievementsModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>⭐ Thành Tích</h2>
+            <div id="achievementsContent"></div>
+        </div>
+    </div>
+    
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>❓ Hướng Dẫn Chơi</h2>
+            <div class="help-content">
+                <h3>🎮 Điều Khiển</h3>
+                <p><strong>Desktop:</strong> Phím ← → hoặc A/D để di chuyển</p>
+                <p><strong>Mobile:</strong> Vuốt trái/phải hoặc dùng nút điều khiển</p>
+                <p><strong>P/Esc:</strong> Tạm dừng game</p>
+                
+                <h3>🎯 Mục Tiêu</h3>
+                <p>✓ Tránh chướng ngại vật (cây, đá, người tuyết)</p>
+                <p>✓ Thu thập coins 🪙 và stars ⭐ để tăng điểm</p>
+                <p>✓ Nhặt power-ups để có lợi thế</p>
+                <p>✓ Đạt điểm cao nhất!</p>
+                
+                <h3>🎁 Power-ups</h3>
+                <p>🛡️ <strong>Shield:</strong> Bảo vệ khỏi 1 va chạm</p>
+                <p>⚡ <strong>Speed Boost:</strong> Di chuyển nhanh hơn</p>
+                <p>⭐ <strong>Score Multiplier:</strong> Nhân đôi điểm số</p>
+                <p>⏱️ <strong>Slow Motion:</strong> Làm chậm thời gian</p>
+                <p>🧲 <strong>Magnet:</strong> Tự động hút collectibles</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shop Modal -->
+    <div id="shopModal" class="modal hidden">
+        <div class="modal-content shop-modal">
+            <span class="close">&times;</span>
+            <h2>🛒 Cửa Hàng</h2>
+            <div class="shop-balance">
+                <span>🪙 Coins: <span id="shopCoins">0</span></span>
+                <span>⭐ Stars: <span id="shopStars">0</span></span>
+            </div>
+            <div class="shop-tabs">
+                <button class="shop-tab active" data-tab="skins">Skins</button>
+                <button class="shop-tab" data-tab="themes">Themes</button>
+            </div>
+            <div id="shopContent" class="shop-content">
+                <!-- Shop items will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="assets/audio/christmas-music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Load required scripts first -->
+<script src="js/collectibles.js"></script>
+<script src="js/shop.js"></script>
+<script src="js/leaderboard.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/welcome.js"></script>
+</body>
+</html>

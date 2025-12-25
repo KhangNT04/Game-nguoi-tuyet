@@ -1,0 +1,292 @@
+/* ==========================================================================
+   CHRISTMAS TREE CSS ART - Professional Decorative Design
+   ========================================================================== */
+
+.tree-art {
+  position: relative;
+  width: 120px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0 auto;
+  animation: treeSway 4s ease-in-out infinite;
+  filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.3));
+}
+
+/* ==========================================================================
+   STAR ON TOP
+   ========================================================================== */
+
+.tree-star {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.8),
+    0 0 40px rgba(255, 215, 0, 0.5);
+  animation: starTwinkle 2s ease-in-out infinite;
+  z-index: 10;
+}
+
+.tree-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #FFE66D 0%, #FFD700 100%);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+@keyframes starTwinkle {
+  0%, 100% {
+    transform: translateX(-50%) scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.1) rotate(5deg);
+    filter: brightness(1.3);
+  }
+}
+
+/* ==========================================================================
+   TREE LAYERS
+   ========================================================================== */
+
+.tree-layer {
+  position: relative;
+  border-left: solid transparent;
+  border-right: solid transparent;
+  border-bottom: solid;
+}
+
+.tree-layer.top {
+  width: 0;
+  height: 0;
+  border-left-width: 35px;
+  border-right-width: 35px;
+  border-bottom-width: 50px;
+  border-bottom-color: #15803d;
+  margin-bottom: -10px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  z-index: 3;
+}
+
+.tree-layer.middle {
+  width: 0;
+  height: 0;
+  border-left-width: 50px;
+  border-right-width: 50px;
+  border-bottom-width: 70px;
+  border-bottom-color: #166534;
+  margin-bottom: -15px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  z-index: 2;
+}
+
+.tree-layer.bottom {
+  width: 0;
+  height: 0;
+  border-left-width: 65px;
+  border-right-width: 65px;
+  border-bottom-width: 85px;
+  border-bottom-color: #14532d;
+  margin-bottom: -20px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  z-index: 1;
+}
+
+/* Tree highlights */
+.tree-layer::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.4) 0%, transparent 100%);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   TRUNK
+   ========================================================================== */
+
+.tree-trunk {
+  position: relative;
+  width: 20px;
+  height: 35px;
+  background: linear-gradient(180deg, #92400e 0%, #78350f 50%, #713f12 100%);
+  border-radius: 4px;
+  margin-top: -5px;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset -2px 0 4px rgba(0, 0, 0, 0.2),
+    inset 2px 0 4px rgba(255, 255, 255, 0.1);
+  z-index: 0;
+}
+
+.tree-trunk::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: rgba(146, 64, 14, 0.5);
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   DECORATIVE LIGHTS
+   ========================================================================== */
+
+.light {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  z-index: 5;
+  box-shadow: 
+    0 0 10px currentColor,
+    0 0 20px currentColor,
+    0 0 30px currentColor;
+  animation: lightBlink 2s ease-in-out infinite;
+}
+
+/* Light positions and colors */
+.light.l1 {
+  top: 15%;
+  left: 45%;
+  background: radial-gradient(circle at 30% 30%, #FFD700 0%, #FFA500 100%);
+  color: #FFD700;
+  animation-delay: 0s;
+}
+
+.light.l2 {
+  top: 30%;
+  left: 25%;
+  background: radial-gradient(circle at 30% 30%, #FF6B6B 0%, #dc2626 100%);
+  color: #FF6B6B;
+  animation-delay: 0.3s;
+}
+
+.light.l3 {
+  top: 35%;
+  right: 20%;
+  background: radial-gradient(circle at 30% 30%, #4ECDC4 0%, #22d3ee 100%);
+  color: #4ECDC4;
+  animation-delay: 0.6s;
+}
+
+.light.l4 {
+  top: 50%;
+  left: 30%;
+  background: radial-gradient(circle at 30% 30%, #FFE66D 0%, #FFD700 100%);
+  color: #FFE66D;
+  animation-delay: 0.9s;
+}
+
+.light.l5 {
+  top: 55%;
+  right: 25%;
+  background: radial-gradient(circle at 30% 30%, #FF6B6B 0%, #dc2626 100%);
+  color: #FF6B6B;
+  animation-delay: 1.2s;
+}
+
+.light.l6 {
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 30% 30%, #4ECDC4 0%, #22d3ee 100%);
+  color: #4ECDC4;
+  animation-delay: 1.5s;
+}
+
+@keyframes lightBlink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+/* ==========================================================================
+   SHADOW
+   ========================================================================== */
+
+.tree-shadow {
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 25px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(10px);
+  animation: treeShadowPulse 4s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes treeShadowPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1.1);
+  }
+}
+
+@keyframes treeSway {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tree-art {
+    width: 90px;
+    height: 135px;
+  }
+  
+  .tree-layer.top {
+    border-left-width: 26px;
+    border-right-width: 26px;
+    border-bottom-width: 38px;
+  }
+  
+  .tree-layer.middle {
+    border-left-width: 38px;
+    border-right-width: 38px;
+    border-bottom-width: 53px;
+  }
+  
+  .tree-layer.bottom {
+    border-left-width: 49px;
+    border-right-width: 49px;
+    border-bottom-width: 64px;
+  }
+}
+

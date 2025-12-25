@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>🎮 Snowman Ski Game - Playing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="stylesheet" href="css/game.css" />
+</head>
+<body>
+    <div class="game-container">
+        <!-- HUD -->
+        <div class="hud">
+            <div class="hud-left">
+                <div class="hud-item">
+                    <span class="hud-label">Điểm:</span>
+                    <span id="scoreDisplay" class="hud-value">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Combo:</span>
+                    <span id="comboDisplay" class="hud-value">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">Level:</span>
+                    <span id="levelDisplay" class="hud-value">1</span>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="hud-item">
+                    <span class="hud-label">🪙</span>
+                    <span id="coinsDisplay" class="hud-value">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">⭐</span>
+                    <span id="starsDisplay" class="hud-value">0</span>
+                </div>
+                <button id="pauseBtn" class="pause-btn">⏸</button>
+            </div>
+        </div>
+
+        <!-- Power-ups Display -->
+        <div id="powerUpsDisplay" class="power-ups-display"></div>
+
+        <!-- Canvas -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Pause Menu -->
+        <div id="pauseMenu" class="overlay hidden">
+            <div class="menu-content">
+                <h2>⏸ Tạm Dừng</h2>
+                <button id="resumeBtn" class="menu-btn">▶ Tiếp Tục</button>
+                <button id="restartBtn" class="menu-btn">🔄 Chơi Lại</button>
+                <button id="quitBtn" class="menu-btn">🏠 Về Menu</button>
+            </div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameOverScreen" class="overlay hidden">
+            <div class="menu-content">
+                <h2>💀 Game Over</h2>
+                <div class="game-over-stats">
+                    <p>Điểm: <span id="finalScore">0</span></p>
+                    <p>Combo cao nhất: <span id="finalCombo">0</span></p>
+                    <p>Level: <span id="finalLevel">1</span></p>
+                    <p>Thời gian: <span id="finalTime">0:00</span></p>
+                </div>
+                <button id="playAgainBtn" class="menu-btn primary">🔄 Chơi Lại</button>
+                <button id="menuBtn" class="menu-btn">🏠 Về Menu</button>
+            </div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div id="mobileControls" class="mobile-controls">
+            <button id="leftBtn" class="control-btn">←</button>
+            <button id="rightBtn" class="control-btn">→</button>
+        </div>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="assets/audio/christmas-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Load scripts in order -->
+    <script src="js/utils.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/collectibles.js"></script>
+    <script src="js/shop.js"></script>
+    <script src="js/powerups.js"></script>
+    <script src="js/achievements.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

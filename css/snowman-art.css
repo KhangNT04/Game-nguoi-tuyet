@@ -1,0 +1,304 @@
+/* ==========================================================================
+   SNOWMAN CSS ART - Professional Character Design
+   ========================================================================== */
+
+.snowman-art {
+  position: relative;
+  width: 200px;
+  height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 0 auto;
+  animation: snowmanBounce 3s ease-in-out infinite;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+}
+
+/* ==========================================================================
+   HEAD
+   ========================================================================== */
+
+.snowman-head {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f0f0f0 50%, #e0e0e0 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.1),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.9);
+  z-index: 3;
+  margin-bottom: -10px;
+}
+
+/* Eyes */
+.snowman-eye {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  top: 35%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.snowman-eye.left {
+  left: 30%;
+  animation: blink 3s ease-in-out infinite;
+}
+
+.snowman-eye.right {
+  right: 30%;
+  animation: blink 3s ease-in-out infinite 0.1s;
+}
+
+@keyframes blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+/* Nose (Carrot) */
+.snowman-nose {
+  position: absolute;
+  bottom: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 25px solid transparent;
+  border-right: 25px solid transparent;
+  border-bottom: 30px solid #FF8C00;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+  z-index: 2;
+}
+
+.snowman-nose::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: -15px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 12px solid #FF6B00;
+}
+
+/* Smile */
+.snowman-head::after {
+  content: '';
+  position: absolute;
+  bottom: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 20px;
+  border: 3px solid #1a1a1a;
+  border-top: none;
+  border-radius: 0 0 40px 40px;
+}
+
+/* ==========================================================================
+   HAT
+   ========================================================================== */
+
+.snowman-hat {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+
+.hat-top {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+  border-radius: 50% 50% 0 0;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.hat-base {
+  width: 80px;
+  height: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+  border-radius: 8px;
+  margin-top: -5px;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(220, 38, 38, 0.2);
+}
+
+.hat-pom {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 25px;
+  height: 25px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f0f0f0 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.1),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+/* ==========================================================================
+   BODY
+   ========================================================================== */
+
+.snowman-body {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f0f0f0 50%, #e0e0e0 100%);
+  border-radius: 50%;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.2),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.1),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.9);
+  z-index: 2;
+  margin-bottom: -10px;
+}
+
+/* Buttons */
+.snowman-button {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #1a1a1a;
+  border-radius: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.snowman-button.top {
+  top: 25%;
+}
+
+.snowman-button.bottom {
+  top: 45%;
+}
+
+/* Scarf */
+.snowman-scarf {
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 30px;
+  background: linear-gradient(90deg, #15803d 0%, #22c55e 50%, #15803d 100%);
+  border-radius: 15px;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.3);
+  z-index: 3;
+  border: 2px solid rgba(21, 128, 61, 0.8);
+}
+
+.snowman-scarf::before {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  right: 20px;
+  width: 40px;
+  height: 50px;
+  background: linear-gradient(90deg, #15803d 0%, #22c55e 100%);
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Arms */
+.snowman-arm {
+  position: absolute;
+  width: 8px;
+  height: 60px;
+  background: linear-gradient(180deg, #78350f 0%, #92400e 100%);
+  border-radius: 4px;
+  top: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.snowman-arm.left {
+  left: -20px;
+  transform: rotate(-25deg);
+  transform-origin: top center;
+}
+
+.snowman-arm.right {
+  right: -20px;
+  transform: rotate(25deg);
+  transform-origin: top center;
+}
+
+/* ==========================================================================
+   SHADOW
+   ========================================================================== */
+
+.snowman-shadow {
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 30px;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(12px);
+  animation: shadowPulse 3s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes shadowPulse {
+  0%, 100% { 
+    opacity: 0.4;
+    transform: translateX(-50%) scale(1);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1.15);
+  }
+}
+
+@keyframes snowmanBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-12px) rotate(-1deg);
+  }
+  75% {
+    transform: translateY(-12px) rotate(1deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .snowman-art {
+    width: 150px;
+    height: 210px;
+  }
+  
+  .snowman-head {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .snowman-body {
+    width: 120px;
+    height: 120px;
+  }
+}
+
