@@ -54,3 +54,8 @@ build/
 # Personal notes (optional - remove if you want to keep them)
 NOTES.md
 TODO.md
+
+# Guide files (local only, not pushed to GitHub)
+HUONG_DAN_GITHUB.md
+HUONG_DAN_NHANH.md
+PUSH_TO_GITHUB.ps1
