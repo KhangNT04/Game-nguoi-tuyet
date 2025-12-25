@@ -3,6 +3,17 @@ body {
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(#061a33, #0b3d91);
     overflow: hidden;
+    /* Mobile optimizations */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+    /* Prevent zoom on double tap */
+    -webkit-text-size-adjust: 100%;
+    /* Better scrolling performance */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .welcome {
@@ -72,13 +83,23 @@ body {
     border: none;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
     display: inline-block;
     position: relative;
     z-index: 11;
     pointer-events: auto;
     user-select: none;
     -webkit-user-select: none;
+    /* Mobile optimizations */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    /* Performance */
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .btn:hover {
@@ -135,6 +156,26 @@ body {
 @keyframes float {
     0%,100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
+}
+
+/* Reduce animations on mobile for better performance */
+@media (max-width: 768px) {
+    .title {
+        animation-duration: 4s; /* Slower animation */
+    }
+    
+    .snowman, .tree {
+        animation-duration: 2.5s; /* Slower animation */
+    }
+    
+    /* Disable animations on very low-end devices if needed */
+    @media (prefers-reduced-motion: reduce) {
+        .title,
+        .snowman,
+        .tree {
+            animation: none;
+        }
+    }
 }
 
 /* Modal Styles */
@@ -457,6 +498,10 @@ body {
         margin: 10% auto;
         padding: 20px;
         width: 95%;
+        max-height: 85vh;
+        overflow-y: auto;
+        /* Better scrolling on mobile */
+        -webkit-overflow-scrolling: touch;
     }
     
     .achievement-item {
@@ -472,5 +517,30 @@ body {
     .shop-balance {
         flex-direction: column;
         gap: 10px;
+    }
+    
+    /* Reduce animations on mobile */
+    .modal {
+        animation-duration: 0.2s;
+    }
+    
+    .modal-content {
+        animation-duration: 0.2s;
+    }
+    
+    /* Optimize title for mobile */
+    .title {
+        font-size: 1.8em;
+        padding: 0 15px;
+    }
+    
+    /* Optimize characters for mobile */
+    .characters {
+        gap: 40px;
+        margin: 20px 0;
+    }
+    
+    .snowman, .tree {
+        font-size: 4em;
     }
 }

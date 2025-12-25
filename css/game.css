@@ -27,6 +27,17 @@ body {
   /* Prevent pull-to-refresh on mobile */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+  /* Prevent zoom on double tap */
+  touch-action: manipulation;
+  /* Better scrolling performance */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  /* Prevent text selection on long press */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
 }
 
 .game-container {
@@ -54,15 +65,23 @@ body {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   touch-action: none;
   -webkit-touch-callout: none;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
+  /* Better image rendering for performance */
+  image-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   /* Better performance on mobile */
-  will-change: transform;
+  will-change: contents;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* Hardware acceleration */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   /* Cursor to indicate clickable */
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+  /* Prevent context menu on long press */
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* HUD */
@@ -337,16 +356,21 @@ body {
   box-shadow: 
     0 5px 20px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  transition: all 0.15s ease;
+  transition: transform 0.1s ease, background 0.1s ease;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
   /* Better touch target */
   -webkit-touch-callout: none;
-  /* Performance */
+  /* Performance optimizations */
   will-change: transform;
   transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* Prevent text selection */
+  -webkit-user-drag: none;
 }
 
 .control-btn:active,
@@ -360,6 +384,12 @@ body {
 
 /* Responsive Design - Mobile First Approach */
 
+/* Performance optimizations for all devices */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* Tablet and below */
 @media (max-width: 1024px) {
   #gameCanvas {
@@ -368,6 +398,11 @@ body {
   
   .hud {
     padding: 12px 15px;
+  }
+  
+  /* Reduce animations on tablets for better performance */
+  .menu-content {
+    animation-duration: 0.2s;
   }
 }
 
@@ -388,38 +423,48 @@ body {
   }
 
   .hud {
-    padding: 10px 12px;
-    min-height: 50px;
-    flex-wrap: wrap;
+    padding: 8px 10px;
+    min-height: auto;
+    flex-wrap: nowrap;
+    /* Better layout for mobile */
+    gap: 5px;
   }
 
   .hud-left,
   .hud-right {
-    gap: 6px;
+    gap: 5px;
+    flex-wrap: nowrap;
   }
 
   .hud-item {
     padding: 6px 10px;
-    font-size: 0.8em;
-    border-radius: 15px;
+    font-size: 0.75em;
+    border-radius: 12px;
+    /* Smaller on mobile but still readable */
+    min-width: auto;
+    flex: 0 1 auto;
   }
 
   .hud-label {
-    font-size: 0.85em;
+    font-size: 0.8em;
+    /* Hide label on very small screens, show icon/emoji only */
   }
 
   .hud-value {
-    font-size: 0.95em;
-    min-width: 35px;
+    font-size: 0.9em;
+    min-width: 30px;
+    font-weight: bold;
   }
 
   .pause-btn {
-    width: 45px;
-    height: 45px;
-    min-width: 45px;
-    min-height: 45px;
-    font-size: 1.3em;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.2em;
     padding: 0;
+    /* Larger touch target */
+    flex-shrink: 0;
   }
 
   .menu-content {
@@ -444,17 +489,19 @@ body {
 
   .mobile-controls {
     display: flex;
-    bottom: 15px;
-    gap: 15px;
+    bottom: 20px;
+    gap: 20px;
+    /* Better spacing */
   }
 
   .control-btn {
-    width: 65px;
-    height: 65px;
-    min-width: 65px;
-    min-height: 65px;
-    font-size: 1.8em;
-    border-width: 2.5px;
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+    min-height: 70px;
+    font-size: 1.9em;
+    border-width: 3px;
+    /* Larger touch targets for better usability */
   }
   
   /* Power-ups UI adjustments */
@@ -468,47 +515,51 @@ body {
 /* Small mobile devices */
 @media (max-width: 480px) {
   .hud {
-    padding: 8px 10px;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 5px;
+    padding: 6px 8px;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 4px;
+    /* Compact horizontal layout */
   }
 
   .hud-left,
   .hud-right {
-    width: 100%;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 5px;
+    gap: 4px;
+    flex: 0 1 auto;
   }
 
   .hud-item {
-    flex: 1;
-    min-width: calc(50% - 5px);
+    flex: 0 1 auto;
+    min-width: auto;
     padding: 5px 8px;
-    font-size: 0.75em;
+    font-size: 0.7em;
+    /* Compact but readable */
   }
 
   .hud-label {
-    font-size: 0.8em;
+    font-size: 0.75em;
+    /* Shorter labels or hide on very small screens */
   }
 
   .hud-value {
-    font-size: 0.9em;
-    min-width: 30px;
+    font-size: 0.85em;
+    min-width: 28px;
+    font-weight: bold;
   }
 
   .pause-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+    position: relative;
     width: 40px;
     height: 40px;
     min-width: 40px;
     min-height: 40px;
-    font-size: 1.2em;
+    font-size: 1.1em;
     z-index: 11;
+    flex-shrink: 0;
+    /* Keep in flow but ensure it's clickable */
   }
 
   .menu-content {
@@ -529,78 +580,62 @@ body {
   }
 
   .control-btn {
-    width: 60px;
-    height: 60px;
-    min-width: 60px;
-    min-height: 60px;
-    font-size: 1.6em;
+    width: 65px;
+    height: 65px;
+    min-width: 65px;
+    min-height: 65px;
+    font-size: 1.7em;
+    /* Still large enough for easy tapping */
   }
   
   .mobile-controls {
-    bottom: 10px;
-    gap: 12px;
+    bottom: 15px;
+    gap: 15px;
+    /* Better spacing even on small screens */
   }
 }
 
 /* Very small screens */
 @media (max-width: 360px) {
+  .hud {
+    padding: 5px 6px;
+    gap: 3px;
+  }
+  
   .hud-item {
-    font-size: 0.7em;
+    font-size: 0.65em;
     padding: 4px 6px;
+    /* Compact but still readable */
+  }
+
+  .hud-label {
+    font-size: 0.7em;
   }
 
   .hud-value {
-    font-size: 0.85em;
+    font-size: 0.8em;
     min-width: 25px;
+  }
+  
+  .pause-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    font-size: 1em;
   }
 
   .control-btn {
-    width: 55px;
-    height: 55px;
-    min-width: 55px;
-    min-height: 55px;
-    font-size: 1.5em;
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    font-size: 1.6em;
+    /* Minimum size for comfortable tapping */
   }
 }
 
-@media (max-width: 480px) {
-  .hud {
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .hud-left,
-  .hud-right {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .hud-item {
-    flex: 1;
-    min-width: 120px;
-  }
-
-  .pause-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-
-  .menu-content {
-    padding: 20px 15px;
-  }
-
-  .menu-content h2 {
-    font-size: 1.3em;
-    margin-bottom: 20px;
-  }
-
-  .stat-row {
-    font-size: 0.9em;
-    padding: 8px 0;
-  }
-}
+/* Duplicate removed - already handled above at line 516 */
 
 /* Landscape orientation for mobile */
 @media (max-height: 500px) and (orientation: landscape) {

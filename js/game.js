@@ -22,6 +22,19 @@
   let canvas = null;
   let ctx = null;
   
+  // Mobile detection and performance settings
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  const isLowEndDevice = isMobile && (navigator.hardwareConcurrency <= 4 || navigator.deviceMemory <= 4);
+  const TARGET_FPS = isMobile ? 30 : 60; // Lower FPS on mobile for better battery life
+  const FRAME_TIME = 1000 / TARGET_FPS;
+  let lastFrameTime = 0;
+  let frameSkip = 0;
+  
+  // Object pools for better performance
+  const particlePool = [];
+  const MAX_PARTICLES = isMobile ? 50 : 100; // Limit particles on mobile
+  const MAX_POOL_SIZE = 200;
+  
   // Set canvas size - optimized for both desktop and mobile
   function resizeCanvas() {
     if (!canvas) return;
@@ -39,9 +52,7 @@
       height = window.visualViewport.height;
     }
     
-    // For mobile, use full screen
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
+    // For mobile, use full screen (isMobile is already defined at top)
     if (isMobile) {
       // Mobile: full screen
       canvas.width = width;
@@ -299,7 +310,7 @@ let obstacles = [];
     if (!canvas) return;
     
     function handleCanvasClick(e) {
-      if (gameState !== GAME_STATES.PLAYING) return;
+      if (!canvas || gameState !== GAME_STATES.PLAYING) return;
       
       e.preventDefault();
       const rect = canvas.getBoundingClientRect();
@@ -307,9 +318,15 @@ let obstacles = [];
       
       // Get coordinates from touch or mouse event
       if (e.touches && e.touches.length > 0) {
+        // Touch event (touchstart/touchmove)
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
+      } else if (e.changedTouches && e.changedTouches.length > 0) {
+        // Touch event (touchend)
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
       } else {
+        // Mouse event
         clientX = e.clientX;
         clientY = e.clientY;
       }
@@ -360,19 +377,49 @@ let obstacles = [];
       
       const touch = e.touches[0];
       const rect = canvas.getBoundingClientRect();
-      touchStartPos.x = touch.clientX - rect.left;
-      touchStartPos.y = touch.clientY - rect.top;
+      
+      // Convert to canvas coordinates
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      touchStartPos.x = (touch.clientX - rect.left) * scaleX;
+      touchStartPos.y = (touch.clientY - rect.top) * scaleY;
+      
       touchStartTime = Date.now();
       touchActive = true;
-      lastTouchX = touchStartPos.x;
-      touchStartX = lastTouchX;
+      lastTouchX = touch.clientX - rect.left; // Keep in screen coordinates for touchmove
+      touchStartX = touchStartPos.x;
       touchStartY = touchStartPos.y;
+      
+      // On mobile, immediately move to touch position (like desktop click)
+      if (isMobile) {
+        const minX = player.width / 2;
+        const maxX = canvas.width - player.width / 2;
+        const targetX = Math.max(minX, Math.min(maxX, touchStartPos.x));
+        player.targetX = targetX;
+        
+        // Visual feedback
+        clickIndicator = {
+          x: targetX,
+          y: touchStartPos.y,
+          life: 20,
+          maxLife: 20
+        };
+      }
     }, { passive: false });
 
+    // Throttle touch move for better performance
+    let lastTouchMoveTime = 0;
+    const TOUCH_MOVE_THROTTLE = isMobile ? 16 : 8; // ~60fps on mobile, ~120fps on desktop
+    
     canvas.addEventListener('touchmove', (e) => {
       e.preventDefault();
       e.stopPropagation();
       if (!touchActive || gameState !== GAME_STATES.PLAYING) return;
+      
+      // Throttle touch move events
+      const now = performance.now();
+      if (now - lastTouchMoveTime < TOUCH_MOVE_THROTTLE) return;
+      lastTouchMoveTime = now;
       
       const touch = e.touches[0];
       const rect = canvas.getBoundingClientRect();
@@ -392,21 +439,48 @@ let obstacles = [];
       e.preventDefault();
       e.stopPropagation();
       
+      if (!touchActive) return;
+      
+      const touch = e.changedTouches[0];
+      const rect = canvas.getBoundingClientRect();
+      
+      // Convert to canvas coordinates
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const touchEndX = (touch.clientX - rect.left) * scaleX;
+      const touchEndY = (touch.clientY - rect.top) * scaleY;
+      
       // Check if it was a tap (quick touch without much movement)
       const touchEndTime = Date.now();
       const timeDiff = touchEndTime - touchStartTime;
-      const touch = e.changedTouches[0];
-      const rect = canvas.getBoundingClientRect();
-      const touchEndX = touch.clientX - rect.left;
-      const touchEndY = touch.clientY - rect.top;
       const moveDistance = Math.sqrt(
         Math.pow(touchEndX - touchStartPos.x, 2) + 
         Math.pow(touchEndY - touchStartPos.y, 2)
       );
       
-      // If it's a quick tap (less than 300ms and less than 10px movement), move to position
-      if (timeDiff < 300 && moveDistance < 10) {
-        handleCanvasClick(e);
+      // If it's a quick tap (less than 300ms and less than 15px movement), move to position
+      // This ensures tap-to-move works like desktop click
+      if (timeDiff < 300 && moveDistance < 15) {
+        const minX = player.width / 2;
+        const maxX = canvas.width - player.width / 2;
+        const targetX = Math.max(minX, Math.min(maxX, touchEndX));
+        player.targetX = targetX;
+        
+        // Visual feedback
+        clickIndicator = {
+          x: targetX,
+          y: touchEndY,
+          life: 20,
+          maxLife: 20
+        };
+        
+        // Create particles
+        createParticles(targetX, touchEndY, 8, '#4CAF50');
+        
+        // Play sound
+        if (window.AudioManager) {
+          window.AudioManager.playSFX('collect', 0.3);
+        }
       }
       
       touchActive = false;
@@ -905,27 +979,63 @@ let obstacles = [];
     }
   }
 
-  // Create particles
-  function createParticles(x, y, count, color) {
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-      const speed = window.GameUtils ? GameUtils.random(2, 5) : (Math.random() * 3 + 2);
-      const size = window.GameUtils ? GameUtils.random(2, 5) : (Math.random() * 3 + 2);
-      particles.push({
-        x: x,
-        y: y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        size: size,
-        life: 30,
-        maxLife: 30,
-        color: color || '#ffffff',
-        alpha: 1
-      });
+  // Get particle from pool or create new one
+  function getParticle() {
+    if (particlePool.length > 0) {
+      return particlePool.pop();
+    }
+    return {
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      size: 0,
+      life: 0,
+      maxLife: 0,
+      color: '#ffffff',
+      alpha: 1
+    };
+  }
+  
+  // Return particle to pool
+  function returnParticle(particle) {
+    if (particlePool.length < MAX_POOL_SIZE) {
+      particlePool.push(particle);
     }
   }
 
-  // Update particles
+  // Create particles with object pooling and mobile optimization
+  function createParticles(x, y, count, color) {
+    // Reduce particle count on mobile for better performance
+    const adjustedCount = isMobile ? Math.floor(count * 0.6) : count;
+    const finalCount = Math.min(adjustedCount, MAX_PARTICLES - particles.length);
+    
+    if (finalCount <= 0) return;
+    
+    for (let i = 0; i < finalCount; i++) {
+      // Limit total particles
+      if (particles.length >= MAX_PARTICLES) break;
+      
+      const angle = (Math.PI * 2 * i) / finalCount + Math.random() * 0.5;
+      const speed = window.GameUtils ? GameUtils.random(2, 5) : (Math.random() * 3 + 2);
+      const size = window.GameUtils ? GameUtils.random(2, 5) : (Math.random() * 3 + 2);
+      
+      const particle = getParticle();
+      particle.x = x;
+      particle.y = y;
+      particle.vx = Math.cos(angle) * speed;
+      particle.vy = Math.sin(angle) * speed;
+      particle.size = size;
+      particle.life = 30;
+      particle.maxLife = 30;
+      particle.color = color || '#ffffff';
+      particle.alpha = 1;
+      
+      particles.push(particle);
+    }
+  }
+
+  // Update particles with object pooling
   function updateParticles(delta) {
     for (let i = particles.length - 1; i >= 0; i--) {
       const particle = particles[i];
@@ -936,7 +1046,8 @@ let obstacles = [];
       particle.alpha = particle.life / particle.maxLife;
       
       if (particle.life <= 0) {
-        particles.splice(i, 1);
+        // Return to pool instead of deleting
+        returnParticle(particles.splice(i, 1)[0]);
       }
     }
   }
@@ -1054,8 +1165,8 @@ let obstacles = [];
     drawClouds();
     
     // Draw snowflakes (simple background effect) - reduced on mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (!isMobile || gameStats.level < 5) {
+    // Skip on low-end devices or high levels for performance
+    if (!isLowEndDevice && (!isMobile || gameStats.level < 5)) {
       drawSnowflakes();
     }
     
@@ -1171,10 +1282,10 @@ let obstacles = [];
     }
   }
   
-  // Theme-specific drawing functions
+  // Theme-specific drawing functions - optimized for mobile
   function drawStars() {
     if (!ctx || !canvas) return;
-    const starCount = 50;
+    const starCount = isMobile ? 25 : 50; // Reduce stars on mobile
     for (let i = 0; i < starCount; i++) {
       const x = (i * 137.5) % canvas.width;
       const y = (i * 199.3) % canvas.height;
@@ -1207,14 +1318,15 @@ let obstacles = [];
   
   function drawFireworks() {
     if (!ctx || !canvas) return;
-    const fireworkCount = 5;
+    const fireworkCount = isMobile ? 3 : 5; // Reduce fireworks on mobile
+    const particleCount = isMobile ? 6 : 8; // Reduce particles per firework
     for (let i = 0; i < fireworkCount; i++) {
       const x = (i * 200 + backgroundTime * 10) % canvas.width;
       const y = canvas.height * 0.3 + Math.sin(backgroundTime + i) * 20;
       const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'];
       
-      for (let j = 0; j < 8; j++) {
-        const angle = (j * Math.PI * 2) / 8 + backgroundTime;
+      for (let j = 0; j < particleCount; j++) {
+        const angle = (j * Math.PI * 2) / particleCount + backgroundTime;
         const distance = 15 + Math.sin(backgroundTime * 2 + j) * 5;
         ctx.fillStyle = colors[j % colors.length];
         ctx.beginPath();
@@ -1226,7 +1338,7 @@ let obstacles = [];
   
   function drawLanterns() {
     if (!ctx || !canvas) return;
-    const lanternCount = 6;
+    const lanternCount = isMobile ? 4 : 6; // Reduce lanterns on mobile
     for (let i = 0; i < lanternCount; i++) {
       const x = (i * (canvas.width / lanternCount) + backgroundTime * 5) % canvas.width;
       const y = canvas.height * 0.2 + Math.sin(backgroundTime + i) * 10;
@@ -1239,12 +1351,14 @@ let obstacles = [];
       ctx.fillRect(x - 12, y + 20, 24, 3);
       ctx.fillRect(x - 12, y + 35, 24, 3);
       
-      // Lantern glow
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = '#FFD700';
-      ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
-      ctx.fillRect(x - 15, y, 30, 40);
-      ctx.shadowBlur = 0;
+      // Lantern glow - skip on low-end devices for performance
+      if (!isLowEndDevice) {
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#FFD700';
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+        ctx.fillRect(x - 15, y, 30, 40);
+        ctx.shadowBlur = 0;
+      }
       
       // Lantern handle
       ctx.strokeStyle = '#FFD700';
@@ -1260,7 +1374,8 @@ let obstacles = [];
   
   function drawPeachBlossoms() {
     if (!ctx || !canvas) return;
-    const blossomCount = 20;
+    const blossomCount = isMobile ? 12 : 20; // Reduce blossoms on mobile
+    const petalCount = isMobile ? 3 : 5; // Reduce petals on mobile
     for (let i = 0; i < blossomCount; i++) {
       const x = (i * 137.5) % canvas.width;
       const y = (i * 199.3 + backgroundTime * 20) % canvas.height;
@@ -1271,41 +1386,48 @@ let obstacles = [];
       ctx.arc(x, y, size, 0, Math.PI * 2);
       ctx.fill();
       
-      // Petals
-      for (let j = 0; j < 5; j++) {
-        const angle = (j * Math.PI * 2) / 5;
-        ctx.fillStyle = '#F48FB1';
-        ctx.beginPath();
-        ctx.arc(x + Math.cos(angle) * size, y + Math.sin(angle) * size, size * 0.5, 0, Math.PI * 2);
-        ctx.fill();
+      // Petals - simplified on mobile
+      if (!isLowEndDevice) {
+        for (let j = 0; j < petalCount; j++) {
+          const angle = (j * Math.PI * 2) / petalCount;
+          ctx.fillStyle = '#F48FB1';
+          ctx.beginPath();
+          ctx.arc(x + Math.cos(angle) * size, y + Math.sin(angle) * size, size * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
   }
   
   function drawChristmasLights() {
     if (!ctx || !canvas) return;
-    const lightCount = 10;
+    const lightCount = isMobile ? 6 : 10; // Reduce lights on mobile
     for (let i = 0; i < lightCount; i++) {
       const x = (i * (canvas.width / lightCount) + backgroundTime * 5) % canvas.width;
       const y = canvas.height * 0.15;
       const colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'];
       const color = colors[i % colors.length];
       
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = color;
+      // Skip shadow on low-end devices for performance
+      if (!isLowEndDevice) {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = color;
+      }
       ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
       
-      // Wire
-      ctx.strokeStyle = '#333333';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(x - (canvas.width / lightCount), y);
-      ctx.lineTo(x, y);
-      ctx.stroke();
+      // Wire - skip on mobile for performance
+      if (!isMobile) {
+        ctx.strokeStyle = '#333333';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x - (canvas.width / lightCount), y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
     }
   }
   
@@ -1353,16 +1475,19 @@ let obstacles = [];
   function drawSnowflakes() {
     if (!canvas || !ctx) return;
     
-    // Improved snowflake rendering with multiple sizes
+    // Improved snowflake rendering with multiple sizes - optimized for mobile
     const time = backgroundTime;
-    const snowflakeCount = Math.min(30, Math.floor(canvas.width / 20));
+    const baseCount = isMobile ? 20 : 30; // Reduce snowflakes on mobile
+    const snowflakeCount = Math.min(baseCount, Math.floor(canvas.width / 20));
+    const maxSize = isMobile ? 2 : 3; // Reduce sizes on mobile
     
     // Draw different sizes of snowflakes
-    for (let size = 1; size <= 3; size++) {
+    for (let size = 1; size <= maxSize; size++) {
       ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + size * 0.1})`;
       ctx.beginPath();
-      for (let i = 0; i < snowflakeCount / 3; i++) {
-        const index = size * snowflakeCount / 3 + i;
+      const countPerSize = Math.floor(snowflakeCount / maxSize);
+      for (let i = 0; i < countPerSize; i++) {
+        const index = size * countPerSize + i;
         const x = (index * 37 + time * 10 * size) % (canvas.width + 20) - 10;
         const y = (time * (20 + size * 10) + i * 60) % (canvas.height + 50);
         ctx.moveTo(x + size, y);
@@ -3037,8 +3162,19 @@ let obstacles = [];
   }
 
   function drawParticles() {
-    // Optimized particle rendering
+    // Optimized particle rendering with mobile optimizations
     if (particles.length === 0 || !ctx) return;
+    
+    // On low-end devices, use simpler rendering
+    if (isLowEndDevice) {
+      ctx.fillStyle = '#ffffff';
+      for (let particle of particles) {
+        ctx.globalAlpha = particle.alpha * 0.8; // Slightly reduce alpha for performance
+        ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2);
+      }
+      ctx.globalAlpha = 1;
+      return;
+    }
     
     // Group particles by color and alpha for batch rendering
     const particlesByColor = {};
@@ -3082,15 +3218,29 @@ let obstacles = [];
     ctx.restore();
   }
 
-  // Game loop
+  // Game loop with frame rate limiting for mobile
   function gameLoop(currentTime) {
     if (!canvas || !ctx) {
       requestAnimationFrame(gameLoop);
       return;
     }
     
+    // Frame rate limiting for mobile
+    if (isMobile) {
+      const elapsed = currentTime - lastFrameTime;
+      if (elapsed < FRAME_TIME) {
+        requestAnimationFrame(gameLoop);
+        return;
+      }
+      lastFrameTime = currentTime - (elapsed % FRAME_TIME);
+    }
+    
     if (!lastTime) lastTime = currentTime;
     deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
+    
+    // Cap deltaTime to prevent large jumps
+    if (deltaTime > 0.1) deltaTime = 0.1;
+    
     lastTime = currentTime;
     
     if (gameState === GAME_STATES.PLAYING) {
